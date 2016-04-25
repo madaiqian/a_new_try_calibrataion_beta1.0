@@ -2,7 +2,7 @@
 It's a new-try tool, which can find out a more accuracy optical center on the base of OpenCV fisheye function's instrinsic matrix through a new score way. <br>
 
 Maybe you could not run the code, because some data file is not provided.<br>
-For example, "curve101_LUT.txt" is the file provide by the camera producer. <br>
+For example, "curve101_LUT.txt" is the file provided by the camera producer, which means a more accurate distort  coefficients table. <br>
 
 
 
