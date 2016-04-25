@@ -1,8 +1,8 @@
 # a_new_try_calibrataion
-It's a new-try tool, which can find out a more accuracy optical center on the base of OpenCV fisheye function's instrinsic matrix through a new score way. 
+It's a new-try tool, which can find out a more accuracy optical center on the base of OpenCV fisheye function's instrinsic matrix through a new score way. <br>
 
-Maybe you could not run the code, because some data file is not provided.
-
+Maybe you could not run the code, because some data file is not provided.<br>
+For example, "curve101_LUT.txt" is the file provide by the camera producer. <br>
 
 
 
