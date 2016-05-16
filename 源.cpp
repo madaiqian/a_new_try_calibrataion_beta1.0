@@ -18,32 +18,32 @@ using namespace std;
 #define beishu 1  
 #define range 40
 
-string str_head = "ÉÏÆûÊı¾İ\\4\\";
+string str_head = "4\\";
 string str[10] = { "11", "22", "00", "1", "2", "8" };
 
 int img_height, img_width;
 int checked_img_num = 0;
 
-double sq_sz = 41.27;        //ÕæÊµÆåÅÌ¸ñ·½¿é¿í¶È
-double f = 161.85;           //½¹¾à
-double pixel_size = 0.006;   //LUTÏµÊı
-double ellip = 1.125;        //ÍÖÔ²ÏµÊı
-vector<double> table;        //LUT±í
-double step;                 //LUT²½³¤
-int LUT_num;                 //LUTÊıÁ¿
+double sq_sz = 41.27;        //çœŸå®æ£‹ç›˜æ ¼æ–¹å—å®½åº¦
+double f = 161.85;           //ç„¦è·
+double pixel_size = 0.006;   //LUTç³»æ•°
+double ellip = 1.125;        //æ¤­åœ†ç³»æ•°
+vector<double> table;        //LUTè¡¨
+double step;                 //LUTæ­¥é•¿
+int LUT_num;                 //LUTæ•°é‡
 
 Size s = Size(WIDTH,HEIGHT);//Size(1440,960);
 
-vector<Point2f> corners;               //ÆåÅÌ¸ñ½Çµã¼¯
-vector<vector<Point3d>>  obj_points;   //ÕæÊµÎïÌåµã¼¯(Z=0)
-vector<vector<Point2d> > img_points;   //³ÉÏñÆ½Ãæµã¼¯
-vector<Point3d> obj_temp;              //ÓÃÓÚ´æ·ÅÒ»ÕÅÍ¼µÄµã¼¯
+vector<Point2f> corners;               //æ£‹ç›˜æ ¼è§’ç‚¹é›†
+vector<vector<Point3d>>  obj_points;   //çœŸå®ç‰©ä½“ç‚¹é›†(Z=0)
+vector<vector<Point2d> > img_points;   //æˆåƒå¹³é¢ç‚¹é›†
+vector<Point3d> obj_temp;              //ç”¨äºå­˜æ”¾ä¸€å¼ å›¾çš„ç‚¹é›†
 
 
 
 /**********************************************
-*  ÕÒÆåÅÌ¸ñ
-*  ÈôÕÒµ½,Ôò½«µã·ÅÈë³ÉÏñÆ½Ãæµã¼¯img_points
+*  æ‰¾æ£‹ç›˜æ ¼
+*  è‹¥æ‰¾åˆ°,åˆ™å°†ç‚¹æ”¾å…¥æˆåƒå¹³é¢ç‚¹é›†img_points
 **********************************************/
 void ready_go()
 {
@@ -68,7 +68,7 @@ void ready_go()
 		waitKey(10);
 		//*/
 
-		//Èç¹ûÆåÅÌ¸ñÑ°ÕÒ³É¹¦£¬½¨Á¢³ÉÏñÆ½Ãæµã¼¯
+		//å¦‚æœæ£‹ç›˜æ ¼å¯»æ‰¾æˆåŠŸï¼Œå»ºç«‹æˆåƒå¹³é¢ç‚¹é›†
 		if (found)
 		{
 			vector<Point2d> img_temp;
@@ -82,7 +82,7 @@ void ready_go()
 		}
 	}
 
-	//¹¹ÔìÎïÌåÈıÎ¬×ø±êµã¼¯
+	//æ„é€ ç‰©ä½“ä¸‰ç»´åæ ‡ç‚¹é›†
 	for (int i = 0; i < ChessBoardHeight; i++) {
 		for (int j = 0; j < ChessBoardWidth; j++) {
 			obj_temp.push_back(Point3d(double(j * sq_sz), double(i * sq_sz), 0));
@@ -93,11 +93,11 @@ void ready_go()
 
 
 /**********************************************
-*  xmlÊä³öK,D
+*  xmlè¾“å‡ºK,D
 **********************************************/
 void xml_out(Matx33d K,Vec4d D)
 {
-	//´´½¨XMLÎÄ¼şĞ´³ö  
+	//åˆ›å»ºXMLæ–‡ä»¶å†™å‡º  
 	FileStorage fs("intrinsics.xml", FileStorage::WRITE);
 	Mat mat = Mat(K);
 	fs << "intrinsics" << mat;
@@ -108,7 +108,7 @@ void xml_out(Matx33d K,Vec4d D)
 
 
 /**********************************************
-*LUT¶ÁÈë
+*LUTè¯»å…¥
 **********************************************/
 void init_LUT()
 {
@@ -126,11 +126,11 @@ void init_LUT()
 }
 
 /**********************************************
-*¸ù¾İ½ÃÕıÍ¼Ïñ×ø±ê(i,j)¼ÆËã¶ÔÓ¦µÄÓãÑÛÍ¼Ïñ×ø±ê(resultx,resulty)
+*æ ¹æ®çŸ«æ­£å›¾åƒåæ ‡(i,j)è®¡ç®—å¯¹åº”çš„é±¼çœ¼å›¾åƒåæ ‡(resultx,resulty)
 **********************************************/
 void correspondence(double i, double j, int xcenter, int ycenter, double* resultx, double* resulty)
 {
-	//¼ÆËãËùĞèµÄ±äÁ¿
+	//è®¡ç®—æ‰€éœ€çš„å˜é‡
 	double theta;
 	double ru;
 	double x, y;
@@ -142,9 +142,9 @@ void correspondence(double i, double j, int xcenter, int ycenter, double* result
 	ru = sqrt(pow(i - ycenter * beishu, 2) + pow((j - xcenter * beishu)/ellip, 2));
 	if (ru != 0)
 	{
-		//¶Ô¶¥½ÇÏàµÈ,Çó³öÊµ¼ÊÊÀ½çÖĞµÄÈëÉä½Ç
+		//å¯¹é¡¶è§’ç›¸ç­‰,æ±‚å‡ºå®é™…ä¸–ç•Œä¸­çš„å…¥å°„è§’
 		theta = atan(ru / f);
-		//Çó³öÓãÑÛ¾µÍ·ÄÚµÄ½Ç¶È
+		//æ±‚å‡ºé±¼çœ¼é•œå¤´å†…çš„è§’åº¦
 		//----LUT----
 		if (1)
 		{
@@ -154,10 +154,10 @@ void correspondence(double i, double j, int xcenter, int ycenter, double* result
 		}
 		else
 		{
-			//¹«Ê½
+			//å…¬å¼
 			rd = 2 * f * sin(theta / 2);
 		}
-		//Çó³öÓãÑÛ¾µÍ·ÄÚÏà¶Ô¹âÖáµÄ×ø±ê
+		//æ±‚å‡ºé±¼çœ¼é•œå¤´å†…ç›¸å¯¹å…‰è½´çš„åæ ‡
 		//christian
 		x = rd * abs(j - xcenter * beishu) / ru;
 		y = rd * abs(i - ycenter * beishu) / ru;
@@ -167,12 +167,11 @@ void correspondence(double i, double j, int xcenter, int ycenter, double* result
 		x = y = 0;
 	}
 
-	//christian
 	if (i <= ycenter * beishu && j <= xcenter * beishu) { x = -x; y = -y; }
 	else if (i <= ycenter * beishu && j > xcenter * beishu) { y = -y; }
 	else if (i > ycenter * beishu && j <= xcenter * beishu) { x = -x; }
 
-	//±ä»»Îª¾ø¶Ô×ø±ê
+	//å˜æ¢ä¸ºç»å¯¹åæ ‡
 	*resultx = x*ellip + xcenter;
 	*resulty = (y + ycenter);
 	return;
@@ -192,10 +191,10 @@ int main(){
 	flag |= cv::fisheye::CALIB_CHECK_COND;
 	flag |= cv::fisheye::CALIB_FIX_SKEW;
 	//cout << "flag: "<<flag << endl;
-	//±ê¶¨Çó³öÄÚ²Î¾ØÕóKºÍ»û±äÏµÊı¾ØÕóD
+	//æ ‡å®šæ±‚å‡ºå†…å‚çŸ©é˜µKå’Œç•¸å˜ç³»æ•°çŸ©é˜µD
 	double calibrate_error=fisheye::calibrate(obj_points, img_points, Size(img_width, img_height), K, D, noArray(), noArray(), flag, TermCriteria(3, 20, 1e-6));
 	getOptimalNewCameraMatrix(K, D, s, 1.0, s);
-	//µÃµ½½ÃÕıÏà»ú¾ØÕó
+	//å¾—åˆ°çŸ«æ­£ç›¸æœºçŸ©é˜µ
 	fisheye::estimateNewCameraMatrixForUndistortRectify(K, D, Size(720, 480), cv::noArray(), K2, 0.8, s ,1.0);
 	
 	
@@ -203,7 +202,7 @@ int main(){
 
 	xml_out(K, D);
 
-	//ÓãÑÛ½ÃÕıºóÍ¼Ïñ
+	//é±¼çœ¼çŸ«æ­£åå›¾åƒ
 	for (int i = 0; i <ImageNum; i++)
 	{
 		Mat output;// = Mat(Size(img_height, img_width), CV_8UC3);
@@ -239,7 +238,7 @@ int main(){
 						int intx = resultx; 
 						int inty = resulty;
 
-						//³¬³öÓãÑÛÍ¼Æ¬·¶Î§£¬·ÀÖ¹Ô½½ç£¬±ßÔµ×Ô¶¯²¹È«
+						//è¶…å‡ºé±¼çœ¼å›¾ç‰‡èŒƒå›´ï¼Œé˜²æ­¢è¶Šç•Œï¼Œè¾¹ç¼˜è‡ªåŠ¨è¡¥å…¨
 						if (intx >= WIDTH)
 							intx = WIDTH - 1;
 						else if (intx < 0)
@@ -266,7 +265,7 @@ int main(){
 				continue;
 			}
 
-			//ºáÏß´ò·Ö
+			//æ¨ªçº¿æ‰“åˆ†
 			for (int k = 0; k < ChessBoardHeight; k++)
 			{
 				double dis = 0;
@@ -296,8 +295,8 @@ int main(){
 			}
 
 
-			//ÊúÏß
-			double AA[ChessBoardWidth], BB[ChessBoardWidth], CC[ChessBoardWidth];  //´¢´æÃ¿ÌõÖ±ÏßµÄA,B,CÏµÊı  y=A*x+B
+			//ç«–çº¿
+			double AA[ChessBoardWidth], BB[ChessBoardWidth], CC[ChessBoardWidth];  //å‚¨å­˜æ¯æ¡ç›´çº¿çš„A,B,Cç³»æ•°  y=A*x+B
 			for (int k = 0; k < ChessBoardWidth; k++)
 			{
 				double dis = 0;
@@ -327,8 +326,8 @@ int main(){
 			}
 
 
-			//´ò·Ö·½Ê½¶ş£¬°´½»µãÃÜ¼¯³Ì¶È´ò·Ö
-			int P_num = 0;  //½»µã¸öÊı
+			//æ‰“åˆ†æ–¹å¼äºŒï¼ŒæŒ‰äº¤ç‚¹å¯†é›†ç¨‹åº¦æ‰“åˆ†
+			int P_num = 0;  //äº¤ç‚¹ä¸ªæ•°
 			Point2f PP[ChessBoardHeight*ChessBoardWidth];
 			for (int k = 1; k <= ChessBoardWidth; k++)
 				for (int h = k + 1; h <= ChessBoardHeight; h++)
@@ -338,7 +337,7 @@ int main(){
 				   //circle(u_img[i][j], PP[P_num], 3, Scalar{ 255, 0, 255 }, 1);
 				}
 
-			//Çó³öÖĞĞÄµã
+			//æ±‚å‡ºä¸­å¿ƒç‚¹
 			double avg_x = 0, avg_y = 0;
 			for (int k = 1; k <= P_num; k++)
 			{
@@ -347,14 +346,14 @@ int main(){
 			}
 			avg_x /= P_num; avg_y /= P_num;
 			//circle(u_img[i][j], Point(avg_x, avg_y), 3, Scalar{ 0, 255, 255 }, 1);
-			//Çó¾ÛÉ¢ÏµÊı
+			//æ±‚èšæ•£ç³»æ•°
 			double dis = 0;
 			for (int k = 1; k <= P_num; k++)
 			{
 				dis += sqrt((avg_x - PP[k].x)*(avg_x - PP[k].x) + (avg_y - PP[k].y)*(avg_y - PP[k].y));
 			}
 
-			//Ñ¡Ôñ´ò·Ö·½Ê½¶şµÄ´ò·Ö¸²¸Ç·ÖÊı
+			//é€‰æ‹©æ‰“åˆ†æ–¹å¼äºŒçš„æ‰“åˆ†è¦†ç›–åˆ†æ•°
 			ChessScore2[i][j] = dis / P_num;
 
 
@@ -363,7 +362,7 @@ int main(){
 		    //waitKey();
 		}
 
-	//ÕÒ³ö·ÖÊı×îĞ¡µÄ¼´Îª×îÓÅµã
+	//æ‰¾å‡ºåˆ†æ•°æœ€å°çš„å³ä¸ºæœ€ä¼˜ç‚¹
 	freopen("score.txt", "w", stdout);
 	double MinScore = 1000000;
 	int marki = 0, markj = 0;
